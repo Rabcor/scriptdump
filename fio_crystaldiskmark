@@ -1,22 +1,9 @@
 #!/bin/bash
-#############################################################################################################
-#Changelog																									#
-#############################################################################################################
-#Added prompts for user input to configure script instead of relying on hardcoded settings.
-#Added a lot of errorchecking
-#The script is now optionally compatible with dash (this is the reason for there being a sed command at the end of every echo -e instance, dash liked to print the -e part when I was testing.)
-#Vastly improved cross-distro compatibility
-#Special thanks to everyone who contributed here: https://gist.github.com/i3v/99f8ef6c757a5b8e9046b8a47f3a9d5b
-#Also extra special thanks to BAGELreflex on github for this: https://gist.github.com/BAGELreflex/c04e7a25d64e989cbd9376a9134b8f6d it made a huge difference to this improved version.
-#Added optimizations for 512k and 4k tests (they now use QSIZE instead of SIZE, it makes these tests a lot faster and doesn't affect accuracy much, assuming SIZE is appropriately configured for your drive.) 
-#Added option to not use legacy (512k and Q1T1 Seq R/W tests) to save time when testing.
-#Ensured the script can run fine without df installed now. Some information may be missing but worst case scenario it'll just look ugly.
-#Added a save results option that imitates the saved results from crystaldiskmark; the formatting is a little wonky but it checks out. Great for comparing results between operating systems.
-#Reconfigured results to use MegaBytes instead of MebiBytes (This is what crystaldiskmark uses so results should now be marginally closer).
-#Sequential read/write results (512k, q1t1 seq and q32t1 seq) will now appear as soon as they're finished and can be viewed while the 4k tests are running.
-#Note: The legacy test option defaults to no if nothing is selected, the result saving defaults to yes. It's easy to change if you don't like this.
+
+#This script uses fio to output results in a similar format as crystaldiskmark. See also: https://unix.stackexchange.com/questions/93791/benchmark-ssd-on-linux-how-to-measure-the-same-things-as-crystaldiskmark-does-i/480191#480191
 #Observation: When testing, I observed that the read results seemed mostly consistent with the results I got from crystaldiskmark on windows, however there's something off with the write results.
 #Sorry for the messy code :)
+
 #############################################################################################################
 #User input requests and error checking																		#
 #############################################################################################################
@@ -265,7 +252,7 @@ Saving at $HOME/$DRIVE$(date +%F%I%M%S).txt
 echo "-----------------------------------------------------------------------
 Flexible I/O Tester - $(fio --version) (C) axboe
                           Fio Github : https://github.com/axboe/fio
-                       Script Source : https://unix.stackexchange.com/a/480191/72554
+                       Script Source : https://github.com/Rabcor/scriptdump/blob/main/fio_crystaldiskmark
 -----------------------------------------------------------------------
 * MB/s = 1,000,000 bytes/s
 * KB = 1000 bytes, KiB = 1024 bytes
@@ -291,7 +278,7 @@ Flexible I/O Tester - $(fio --version) (C) axboe
 echo "-----------------------------------------------------------------------
 Flexible I/O Tester - $(fio --version) (C) axboe
                           Fio Github : https://github.com/axboe/fio
-                       Script Source : https://unix.stackexchange.com/a/480191/72554
+                       Script Source : https://github.com/Rabcor/scriptdump/blob/main/fio_crystaldiskmark
 -----------------------------------------------------------------------
 * MB/s = 1,000,000 bytes/s
 * KB = 1000 bytes, KiB = 1024 bytes
