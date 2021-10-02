@@ -1,0 +1,32 @@
+#!/bin/bash
+# This script cleanly creates a HTML file, embeds the selected SWF file in the HTML file, then runs it in  a browser of your choice (default chromium), it then cleans up (deletes) the resulting HTML file.
+# If no SWF file is specified, the first swf file detected in the directory will be run instead.
+
+#Set browser
+BROWSER=chromium
+
+if [ -z $1 ]; then
+   #Detect SWF Files
+   swf=$(ls *.swf | tail -1)
+else
+   #Use user specified SWF file
+   swf=$@
+fi
+
+#Extension check
+if [[ $swf != *.swf ]]; then
+   echo "Error: $@ is not a .swf file! exiting."
+   exit
+fi
+
+#Name HTML file
+html=$(echo $swf | sed 's:swf:html:g')
+
+#Create HTML File
+echo '<embed src='$swf 'width="100%" height="100%"></embed>' | sed 's:src=:src=":g' | sed 's:swf:swf":g' > "$html"
+
+#Launch HTML & Delete it
+$BROWSER "$html" && sleep 20 && rm "$html"
+
+#Obsolete below.
+#firefox about:config & sleep 1 && wmctrl -xa firefox && sleep 0.2 && xdotool key Return && xdotool type plugins.http && sleep 1 && xdotool key Tab && xdotool key Down && xdotool key Return && xdotool key Control+w && firefox "$html" && firefox about:config && wmctrl -xa firefox && sleep 0.2 && xdotool key Return && xdotool type plugins.http && sleep 1 && xdotool key Tab && xdotool key Down && xdotool key Return && xdotool key Control+w && sleep 20 && rm "$html"
