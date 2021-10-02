@@ -1,5 +1,5 @@
 #!/bin/dash
-# Autoscroll (Full)
+# This script is an attempt at creating a system-wide autoscroll function
 
 enableverticalscroll=1
 enablehorizontalscroll=1
