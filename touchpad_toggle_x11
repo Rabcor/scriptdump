@@ -1,0 +1,14 @@
+#!/bin/bash
+
+ID=$(xinput | grep -m1 -i touchpad | cut -d '=' -f2 | cut -d '[' -f1)
+STATUS=$(xinput --list-props $ID | grep "Device Enabled" | cut -d ':' -f2)
+
+if [ $STATUS = 1 ]; then
+	xinput --set-prop $ID "Device Enabled" 0
+	echo "Touchpad Disabled"
+elif [ $STATUS = 0 ]; then
+	xinput --set-prop $ID "Device Enabled" 1
+	echo "Touchpad Enabled"
+else
+	echo "Error: Either your touchpad was not detected, or you are not using xorg server."
+fi
