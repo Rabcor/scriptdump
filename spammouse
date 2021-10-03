@@ -23,6 +23,5 @@ fi
 
 # Check if declared button is an integer, if it is, spam the key, if it is not, crash script.
 while [ "$btn" -eq "$btn" ]; do
-    echo a
-    #xdotool click $btn
+    xdotool click $btn
 done;
