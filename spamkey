@@ -14,7 +14,7 @@
 
 
 declare -r key=$1
-declare -r pre="" # run 'xdotool key' to see available args
+declare -r args="" # run 'xdotool key' to see available args
 
 # Kill if already running
 scriptname=`basename "$0"`
@@ -26,6 +26,6 @@ fi
 
 # Spam the declared key
 while [ "$key" != "" ]; do
-    xdotool key $pre $key
+    xdotool key $args $key
 done;
 
