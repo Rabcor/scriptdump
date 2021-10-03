@@ -1,0 +1,29 @@
+#!/bin/sh
+# Syntax: spamkey [keysym or keycode]
+#   Example: spamkey a      (spams a)
+#   Example: spamkey 38     (spams a)
+#
+# Intended use: This script was originally meant to be used for macro keys, for instance on gaming keyboards, such keyboards often have software that allows you to bind scripts to the macro keys, use cases would include:
+#       Running script on key press and killing it/re-running it on key release (spams key until the trigger key is released)
+#       Running script on key press and killing it/re running it again the next time the key is pressed (spams key until trigger key is pressed a second time)
+#
+# Alternative uses:
+#       Use a software to bind a key combination to trigger the script (such as sxhkd or xbindkeys) to create the desired behavior in above examples.
+#           For instance, you can use a key combination to toggle on and off an sxhkd configuration which would make the a key trigger this script to spam itself until it is pressed again or until it is released.
+
+
+
+declare -r key=$1
+
+# Kill if already running
+scriptname=`basename "$0"`
+if [[ "`pidof -x $scriptname -o %PPID`" ]]; then
+    xdotool key $key    # Prevents issue where if a modifier dependent key like say A (instead of a) is used, the modifier would be held down after script closes.
+    pkill $scriptname
+    exit
+fi
+
+# Spam the declared key
+while [ "$key" != "" ]; do
+    xdotool key $key
+done;
