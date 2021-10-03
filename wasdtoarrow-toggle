@@ -4,6 +4,7 @@
 if xmodmap -pke | grep "  25" | grep Up ; then
 	echo "Resetting Keybinds to default."
 	setxkbmap # Reset keybinds
+	xmodmap ~/.Xmodmap # Reloads default xmodmap settings
 else
 	echo "Binding WASD to behave like the Arrow keys."
 	xmodmap -e "keycode 25 = Up" # w => Up
