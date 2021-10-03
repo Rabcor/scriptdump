@@ -2,13 +2,19 @@
 #This script binds WASD to behave as the Arrow keys when activated, and resets your keyboard bindings when activated again.
 
 if xmodmap -pke | grep "  25" | grep Up ; then
-	echo "Resetting Keybinds to default."
-	setxkbmap # Reset keybinds
-	xmodmap ~/.Xmodmap # Reload default xmodmap user settings
+    echo "Resetting Keybinds to default."
+    setxkbmap # Reset keybinds
+    xmodmap ~/.Xmodmap # Reload default xmodmap user settings
 else
-	echo "Binding WASD to behave like the Arrow keys."
-	xmodmap -e "keycode 25 = Up" # w => Up
-	xmodmap -e "keycode 38 = Left" # a => Left
-	xmodmap -e "keycode 39 = Down" # s => Down
-	xmodmap -e "keycode 40 = Right" # d => Right
+    echo "Binding WASD to behave like the Arrow keys."
+    xmodmap -e "keycode 25 = Up" # w => Up
+    xmodmap -e "keycode 38 = Left" # a => Left
+    xmodmap -e "keycode 39 = Down" # s => Down
+    xmodmap -e "keycode 40 = Right" # d => Right
+
+    echo "Binding 1-4 to behave like ASDW."
+    xmodmap -e "keycode 10 = A" # 1 => A
+    xmodmap -e "keycode 11 = S" # 2 => S
+    xmodmap -e "keycode 12 = D" # 3 => D
+    xmodmap -e "keycode 13 = W" # 4 => W
 fi
