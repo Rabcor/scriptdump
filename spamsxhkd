@@ -1,4 +1,9 @@
 #!/bin/sh
+# Dependencies: 
+#               https://github.com/Rabcor/scriptdump/blob/main/spammouse
+#               https://github.com/Rabcor/scriptdump/blob/main/spamkey
+#               sxhkd
+#               xdotool
 
 device=$1
 mode=$2
