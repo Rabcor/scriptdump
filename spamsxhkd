@@ -4,18 +4,22 @@
 #               https://github.com/Rabcor/scriptdump/blob/main/spamkey
 #               sxhkd
 #               xdotool
+#
+# TODO:
+#       Make it work without modifiers (probably not possible with sxhkd or xbindkeys)
+#       Make holding down key to spam work (probably not possible with sxhkd or xbindkeys)
+
+modifiers="ctrl + shift"
+restartsxhkd=n  # set to y if you want to restart sxhkd after running 'spamsxhkd -c'
+
+scriptpath="/home/$USER/Scripts"
+mousescriptname=spammouse
+kbdscriptname=spamkey
+confdir="/home/$USER/.config/sxhkd"
 
 device=$1
 mode=$2
 event=$3
-
-scriptpath="~/Scripts"
-mousescriptname=spammouse
-kbdscriptname=spamkey
-
-restartsxhkd=n  # set to y if you want to restart sxhkd after running 'spamsxhkd -c'
-
-confdir="/home/$USER/.config/sxhkd"
 
 if [ "$1" = "-c" ]; then
     rm $confdir/spamsxhkdrc_* &> /dev/null
@@ -34,15 +38,16 @@ fi
 # Ensure syntax is correct, display help and exit if it is not.
 if [ "$device" != "-m" ] && [ "$device" != "-k" ] || [ "$mode" != "-h" ] &&  [ "$mode" != "-t" ] || [ "$event" = "" ]; then
     echo "Syntax: spamsxhkd [Device Arg] [Mode Arg] [Event]
-Example: spamsxhkd -m -h 1
+Example: spamsxhkd -k -h a
+Result: Holding down '$modifiers + a' spams 'a'
 
 Device Arguments:
     -m          Mouse
     -k          Keyboard
 
 Mode Arguments:
-    -h          Hold mode
     -t          Toggle mode
+    -h          Hold mode (does not work!)
 
 Mouse Events:
     [Button ID] Mouse buttons are represented by integers, use xev to find button ID
@@ -62,15 +67,15 @@ case $device in
         button="button$event"
         case $mode in
             "-t")
-                echo "$button
-    $scriptpath/$mousescriptname $event
+                echo "$modifiers + $button
+    xdotool keyup $modifiers && $scriptpath/$mousescriptname $event
                 " > $confdir/spamsxhkdrc_m_$event
                 ;;
             "-h")
-                echo "$button
-    $scriptpath/$mousescriptname $event
-@$button
-    $scriptpath/$mousescriptname $event
+                echo "$modifiers + $button
+    xdotool keyup $modifiers && $scriptpath/$mousescriptname $event
+@$modifiers + $button
+    pkill $mousescriptname
                 " > $confdir/spamsxhkdrc_m_$event
                 ;;
         esac
@@ -79,18 +84,18 @@ case $device in
     "-k")
         case $mode in
             "-t")
-                echo "$event
-    $scriptpath/$mousescriptname $event
+                echo "$modifiers + $event
+    xdotool keyup $modifiers && $scriptpath/$kbdscriptname $event
                 " > $confdir/spamsxhkdrc_k_$event
                 ;;
             "-h")
-                echo "$event
-    $scriptpath/$mousescriptname $event
+                echo "$modifiers + $event
+    xdotool keyup $modifiers && $scriptpath/$kbdscriptname $event
 @$event
-    $scriptpath/$mousescriptname $event
+    pkill $kbdscriptname
                 " > $confdir/spamsxhkdrc_k_$event
                 ;;
         esac
-        sxhkd -c $confdir/spamsxhkdrc_m_$event
+        sxhkd -c $confdir/spamsxhkdrc_k_$event
         ;;
 esac
