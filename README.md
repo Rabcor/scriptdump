@@ -6,12 +6,14 @@ These have been created for personal reasons and thus cannot be expected to be p
 # Script List
 
 * autoscroll: System-wide autoscroll functionality (allows you to use autoscroll in a lot of programs that don't support it)
+* disablemousepaste.sh: Disables middle click paste in Xorg while running.
 * fio_crystaldiskmark: An imitation of crystaldiskmark using fio to deliver tests and results in a comparable format.
 * fixvsyscall: Enables abi.vsyscall32 if it is disabled (some games need it to be disabled for the anti-cheat to work, this is to fix that after you stop playing.)
 * gengvtg.sh: Creates a GVT-G device if it is supported by your iGPU.
 * headphonetoggle.sh: Toggles between speakers and headphones (-b to turn both on at once), also auto switches your easyeffects/pulseeffects presets. Does not require * * pulseaudio or pipewire, but supports it.
 * mountiso.sh: Script to mount iso files.
 * nocrash.sh: A crash recovery script, it makes a program restart itself if it crashes, supports arguments too.
+* screencast.sh: Records your screen via ffmpeg and saves it to a file; has a bunch of options.
 * spamkey: Spam a keyboard button (X11/xdotool only)
 * spammouse: Spam a mouse button (X11/xdotool only)
 * spamsxhkd: Generates an sxhkd config file which spams a button when you press a specified modifier + that button. Depends on spamkey and spammouse.
