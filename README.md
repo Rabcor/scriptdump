@@ -15,6 +15,8 @@ These have been created for personal reasons and thus cannot be expected to be p
 * spamkey: Spam a keyboard button (X11/xdotool only)
 * spammouse: Spam a mouse button (X11/xdotool only)
 * spamsxhkd: Generates an sxhkd config file which spams a button when you press a specified modifier + that button. Depends on spamkey and spammouse.
+* split-audio.sh: Split an audio file using timestamps.
+* split-audio-batch.sh: Accepts a list of timestamps and names then uses the split-audio.sh script to split target audio file into multiple files based on the list. (Intended for use with youtube-dl, e.g. you download an artist's album in one file, then copy the description or a comment that provides timestamps to a file, then use this script to read that file)
 * swftohtml: Converts an SWF to HTML file to run in a browser (a bit obsolete considering most browsers no longer support flash, but it was super useful once)
 * sysinfo: Prints a whole bunch of system information (an alternative to things like inxi)
 * timer-lite.sh: A countdown timer using sleep commands (There may be some drift over long time periods, but I reduced the sleep time in an attempt to trivialise it)
