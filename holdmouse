@@ -1,0 +1,16 @@
+#!/bin/sh
+
+declare -r btn="$1"       # 1=left, 2=mid, 3=right, 4=wheel-up, 5=wheel-down; the order of keys may vary by mouse, use xev to determine which button is which.
+declare -r args="" # run 'xdotool click' to see available args
+
+# Kill if already running
+scriptname=`basename "$0"`
+if [[ "`pidof -x $scriptname -o %PPID`" ]]; then
+    pkill $scriptname
+    exit
+fi
+
+# Check if declared button is an integer, if it is, hold the key
+if [ "$btn" -eq "$btn" ]; then
+    xdotool mousedown $args $btn
+fi

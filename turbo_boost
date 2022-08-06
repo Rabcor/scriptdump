@@ -1,0 +1,40 @@
+#!/bin/sh
+#This script allows you to set intel turbo boost on or off.
+
+STATE=$(cat /sys/devices/system/cpu/intel_pstate/no_turbo)
+
+if [ -z "$1" ]; then
+    case $STATE in
+    1)
+    echo "Turbo boost is disabled."
+    ;;
+    0)
+    echo "Turbo boost is enabled."
+    ;;
+    *)
+    echo "Error: Turbo boost status not found"
+    ;;
+    esac
+elif [ "$1" == "on" ] || [ "$1" == "1" ] || [ "$1" == "enable" ]; then
+    if [ "$STATE" == "0" ]; then
+        echo Turbo boost is already enabled.
+        exit
+    fi
+    echo 0 > /sys/devices/system/cpu/intel_pstate/no_turbo
+    STATE=$(cat /sys/devices/system/cpu/intel_pstate/no_turbo)
+    if [ "$STATE" == "0" ]; then
+        echo Turbo boost has been enabled.
+    fi
+elif [ "$1" == "off" ] || [ "$1" == "0" ] || [ "$1" == "disable" ]; then
+    if [ "$STATE" == "1" ]; then
+        echo Turbo boost is already disabled.
+        exit
+    fi
+    echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
+    STATE=$(cat /sys/devices/system/cpu/intel_pstate/no_turbo)
+    if [ "$STATE" == "1" ]; then
+        echo Turbo boost has been disabled.
+    fi
+else
+    echo "Usage: turbo_boost [enable/disable]"
+fi
