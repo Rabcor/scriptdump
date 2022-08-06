@@ -10,7 +10,7 @@ These have been created for personal reasons and thus cannot be expected to be p
 * fio_crystaldiskmark: An imitation of crystaldiskmark using fio to deliver tests and results in a comparable format.
 * fixvsyscall: Enables abi.vsyscall32 if it is disabled (some games need it to be disabled for the anti-cheat to work, this is to fix that after you stop playing.)
 * gengvtg.sh: Creates a GVT-G device if it is supported by your iGPU.
-* headphonetoggle.sh: Toggles between speakers and headphones (-b to turn both on at once), also auto switches your easyeffects/pulseeffects presets. Does not require * * pulseaudio or pipewire, but supports it.
+* headphonetoggle.sh: Toggles between speakers and headphones (-b to turn both on at once), also auto switches your easyeffects/pulseeffects presets. Does not require pulseaudio or pipewire, but supports it.
 * holdmouse: Holds down a mousebutton with xdotool.
 * mountiso.sh: Script to mount iso files.
 * nocrash.sh: A crash recovery script, it makes a program restart itself if it crashes, supports arguments too.
