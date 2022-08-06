@@ -11,6 +11,7 @@ These have been created for personal reasons and thus cannot be expected to be p
 * fixvsyscall: Enables abi.vsyscall32 if it is disabled (some games need it to be disabled for the anti-cheat to work, this is to fix that after you stop playing.)
 * gengvtg.sh: Creates a GVT-G device if it is supported by your iGPU.
 * headphonetoggle.sh: Toggles between speakers and headphones (-b to turn both on at once), also auto switches your easyeffects/pulseeffects presets. Does not require * * pulseaudio or pipewire, but supports it.
+* holdmouse: Holds down a mousebutton with xdotool.
 * mountiso.sh: Script to mount iso files.
 * nocrash.sh: A crash recovery script, it makes a program restart itself if it crashes, supports arguments too.
 * screencast.sh: Records your screen via ffmpeg and saves it to a file; has a bunch of options.
@@ -24,6 +25,7 @@ These have been created for personal reasons and thus cannot be expected to be p
 * timer-lite.sh: A countdown timer using sleep commands (There may be some drift over long time periods, but I reduced the sleep time in an attempt to trivialise it)
 * timer.sh: A countdown timer that synchronizes with the system clock to ensure there is no perceivable time drift.
 * touchpad_toggle_x11: Toggles the touchpad on & off (x11 only)
+* turbo_boost: A script that allows you to set intel turbo boost on or off (requires root, i suggest moving it to /usr/local/bin/)
 * vcompress.sh: Compress a video file using ffmpeg, many options which give different quality/size/speed.
 * wasdtoarrow-toggle: Rebinds WASD to be the same as the arrow keys, and binds 1-4 to ASDW (useful for certain video games that do not allow you to change keybinds).
 * webcamtoggle.sh: Toggles webcam on & off by disabling/enabling the kernel module for it.
