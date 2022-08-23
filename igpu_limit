@@ -1,0 +1,50 @@
+#!/bin/sh
+#Identifier for igpu (should usually be 0)
+card=0
+
+#Limiter Status
+limiter=$(( $(cat /sys/class/drm/card$card/gt_max_freq_mhz) / $(cat /sys/class/drm/card$card/gt_min_freq_mhz) ))
+if [ $limiter != 1 ]; then
+    limiter=0
+fi
+
+
+#Main
+if [ "$1" == "on" ]; then #Limit igpu frequency to it's minimum
+    echo $(cat /sys/class/drm/card$card/gt_min_freq_mhz) > /sys/class/drm/card$card/gt_max_freq_mhz
+    echo $(cat /sys/class/drm/card$card/gt_min_freq_mhz) > /sys/class/drm/card$card/gt_boost_freq_mhz
+elif [ "$1" == "off" ]; then #Restore max igpu frequency to default
+    echo $(cat  /sys/class/drm/card$card/gt_RP0_freq_mhz) > /sys/class/drm/card$card/gt_max_freq_mhz
+    echo $(cat  /sys/class/drm/card$card/gt_RP0_freq_mhz) > /sys/class/drm/card$card/gt_boost_freq_mhz
+elif [ "$1" == "boot" ]; then #Limit igpu frequency to it's minimum on boot
+    echo w /sys/class/drm/card$card/gt_max_freq_mhz - - - - $(cat /sys/class/drm/card$card/gt_min_freq_mhz) > /etc/tmpfiles.d/igpu_powersave.conf
+    echo w /sys/class/drm/card$card/gt_boost_freq_mhz - - - - $(cat /sys/class/drm/card$card/gt_min_freq_mhz) >> /etc/tmpfiles.d/igpu_powersave.conf
+elif [ "$1" == "boot-off" ]; then #Don't limit igpu frequency to it's minimum on boot
+    rm /etc/tmpfiles.d/igpu_powersave.conf
+elif [ "$1" == "toggle" ]; then #Don't limit igpu frequency to it's minimum on boot
+    DISPLAY=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"
+    username=$(who | grep '('$DISPLAY')' | awk '{print $1}' | head -n 1)
+    user_id=$(id -u $username)
+    case $limiter in
+        1)
+            echo $(cat  /sys/class/drm/card$card/gt_RP0_freq_mhz) > /sys/class/drm/card$card/gt_max_freq_mhz
+            echo $(cat  /sys/class/drm/card$card/gt_RP0_freq_mhz) > /sys/class/drm/card$card/gt_boost_freq_mhz
+        ;;
+        0)
+            echo $(cat /sys/class/drm/card$card/gt_min_freq_mhz) > /sys/class/drm/card$card/gt_max_freq_mhz
+            echo $(cat /sys/class/drm/card$card/gt_min_freq_mhz) > /sys/class/drm/card$card/gt_boost_freq_mhz
+        ;;
+        *)
+            echo "Error! Something went wrong!"
+            exit
+        ;;
+    esac
+    sudo -u $username DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$user_id/bus notify-send "iGPU Max Frequency: $(cat /sys/class/drm/card$card/gt_max_freq_mhz)mHz"
+else
+    echo "Usage: igpu_limit [arg]
+    on - Limits igpu frequency to minimum
+    off - Resets limit on igpu frequency
+    boot - Limits igpu frequency to minimum on boot
+    boot-off - Disable limiting igpu frequency on boot
+    toggle - Toggle limit on and off"
+fi

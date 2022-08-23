@@ -1,0 +1,26 @@
+#!/bin/sh
+#Limit cpu frequency to 800mhz with auto-cpufreq
+
+#in kHz
+limit=800000
+
+if [ "$1" == "on" ]; then #Limit cpu frequency to it's minimum
+    sudo cpufreqctl.auto-cpufreq --frequency-max --set=$limit
+    echo "CPU Frequency limited to $(( $limit / 1000 ))mHz"
+elif [ "$1" == "off" ]; then #Unlimit cpu frequency (restore max freq to default)
+    sudo systemctl restart auto-cpufreq
+    echo "CPU Frequency limit reset"
+elif [ "$1" == "toggle" ]; then #Unlimit cpu frequency (restore max freq to default)
+    if [ "$(cpufreqctl.auto-cpufreq --frequency-max)" == "$limit" ]; then
+        sudo systemctl restart auto-cpufreq
+        notify-send "CPU Frequency limit reset"
+    else
+        sudo cpufreqctl.auto-cpufreq --frequency-max --set=$limit
+        notify-send "CPU Frequency limited to $(( $limit / 1000 ))mHz"
+    fi
+else
+    echo "Usage: cpu_limit [arg]
+    on - Limits cpu frequency to minimum
+    off - Resets limit on cpu frequency
+    toggle - Toggles limit on or off"
+fi

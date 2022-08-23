@@ -1,0 +1,56 @@
+#!/bin/sh
+#todo: re-enable gpu without requiring reboot (obstacle: re-detecting (re-scanning?) the GPU's pci bus after it has been removed)
+
+#The bus is autodetected, should be fine on most laptos but no idea how it'd behave on a desktop
+bus=$(lspci | grep -m1 NVID | cut -d '.' -f1 | sed 's/:/\\\\:/g')
+#Sanity check to see if the gpu is currently enabled requires the bus value given in a slightly different format
+busalt=$(lspci | grep -m1 NVID | cut -d '.' -f1)
+#This acpi id is the most common one for nvidia dgpus on laptops, but some laptops might have a different id, if the script doesn't work for you this is most likely the problem.
+#You should be able to use this script to find the correct method for your laptop: https://github.com/mkottman/acpi_call/blob/master/examples/turn_off_gpu.sh
+acpi_id=SB.PCI0.PEG0.PEGP
+
+#Check and report the current status of the dgpu
+if [ -d /sys/bus/pci/devices/0000:$busalt.0 ]; then
+    gpu="On"
+else
+    gpu="Off"
+fi
+if [ -f /etc/tmpfiles.d/nvidia_off.conf ]; then
+    gpuboot="Off"
+else
+    gpuboot="On"
+fi
+
+echo "
+Nvidia GPU current status: $gpu
+Nvidia GPU status on next boot: $gpuboot
+"
+
+if [ "$1" == "off" ] && [ -d /sys/bus/pci/devices/0000:$busalt.0 ]; then #Disable nvidia gpu (confirm it is running before the command is executed to prevent errors, as it must be running for automatic detection of bus ID)
+    #The command below which disables the nvidia driver on boot, it may not be necessary, however there's no reason to leave them running in the background doing nothing, therefore I kept the command in.
+    echo "$(lsmod | grep nvidia | cut -d ' ' -f1 | sed 's/^/blacklist /')" | sudo tee /etc/modprobe.d/nvidia-off.conf
+    sudo sh -c "echo w /sys/bus/pci/devices/0000\\\\:$bus.*/remove - - - - 1 > /etc/tmpfiles.d/nvidia_off.conf"
+    sudo sh -c "echo w /proc/acpi/call - - - - \\\\\\\\_$acpi_id._OFF >> /etc/tmpfiles.d/nvidia_off.conf"
+    sudo systemctl enable root-resume
+    #Make sure this is the only Xorg config file that references the nvidia gpu! Uf there are any others left in Xorg likely will not launch properly.
+    sudo rm /etc/X11/xorg.conf.d/10-intel-nvidia-drm-outputclass.conf
+    echo "The nvidia GPU will be disabled upon reboot
+    "
+elif [ "$1" == "on" ]; then #Re-enable nvidia gpu
+    sudo rm /etc/modprobe.d/nvidia-off.conf
+    sudo systemctl disable root-resume
+    sudo systemctl stop root-resume
+    sudo rm /etc/tmpfiles.d/nvidia_off.conf
+    #Add a xorg config file that references the nvidia gpu back in, otherwise Xorg may not launch properly.
+    sudo cp /usr/share/X11/xorg.conf.d/10-intel-nvidia-drm-outputclass.conf /etc/X11/xorg.conf.d/
+    echo "The Nvidia GPU will be enabled upon reboot
+    "
+    #the two commands below (must be run in order) will re-enable the nvidia gpu immediately, however I haven't found a way to get the nvidia driver to detect it again afterwards which is why they're commented out.
+    #sudo sh -c "echo \\\\_$acpi_id._ON > /proc/acpi/call"
+    #sudo sh -c "echo 1 > /sys/bus/pci/rescan"
+else
+    echo "Usage: nvidia_toggle [arg]
+    on - Enables nvidia GPU (requires reboot)
+    off - Disable nvidia GPU (requires reboot)
+    "
+fi
