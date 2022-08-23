@@ -6,14 +6,17 @@ These have been created for personal reasons and thus cannot be expected to be p
 # Script List
 
 * autoscroll: System-wide autoscroll functionality (allows you to use autoscroll in a lot of programs that don't support it)
+* cpu_limit: Limit the CPU to a set maximum frequency via auto-cpufreq (requires auto-cpufreq to be installed)
 * disablemousepaste.sh: Disables middle click paste in Xorg while running.
 * fio_crystaldiskmark: An imitation of crystaldiskmark using fio to deliver tests and results in a comparable format.
 * fixvsyscall: Enables abi.vsyscall32 if it is disabled (some games need it to be disabled for the anti-cheat to work, this is to fix that after you stop playing.)
 * gengvtg.sh: Creates a GVT-G device if it is supported by your iGPU.
 * headphonetoggle.sh: Toggles between speakers and headphones (-b to turn both on at once), also auto switches your easyeffects/pulseeffects presets. Does not require pulseaudio or pipewire, but supports it.
 * holdmouse: Holds down a mousebutton with xdotool.
+* igpu_limit: Limit the iGPU to it's minimum allowed frequency (for powersaving purposes)
 * mountiso.sh: Script to mount iso files.
 * nocrash.sh: A crash recovery script, it makes a program restart itself if it crashes, supports arguments too.
+* nvidia_toggle: Toggle your nvidia gpu on/off on reboot (completely powers the card down, it's meant for laptops for powersaving purposes)
 * screencast.sh: Records your screen via ffmpeg and saves it to a file; has a bunch of options.
 * spamkey: Spam a keyboard button (X11/xdotool only)
 * spammouse: Spam a mouse button (X11/xdotool only)
