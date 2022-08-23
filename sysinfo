@@ -134,7 +134,7 @@ if lspci | grep -m1 "VGA compatible controller: NVIDIA" > /dev/null; then
     GPUSLOT=$(lspci -n | grep $GPUDID | cut -d ' ' -f3)
     if [ "$GPUDriver" = "nvidia" ]; then
 		GPUMem=$(nvidia-smi | grep MiB -m1 | cut -d '|' -f3 | sed 's: ::g' |  sed 's:/: / :g')
-		GPUPow=$(nvidia-smi | grep W | cut -d '/' -f2 | cut -c 14- | sed 's: ::g')
+		GPUPow=$(nvidia-smi | grep "W /" | cut -d 'W' -f1 | rev | cut -c -3 | rev | sed 's: ::g')
     fi
     if [ "$GPUDriver" = "nvidia" ]; then
 		GPUTemp=$(nvidia-smi -q | grep "GPU Current Temp" | cut -d ':' -f2 | sed 's/ C/°C/g' | sed 's: ::g')
@@ -295,7 +295,7 @@ if [ $GPUDedicated -eq 1 ]; then
 	echo "    Temperature: $GPUTemp"
 	if [ $less -ne 1 ]; then
 		if [ "$GPUDriver" = "nvidia" ]; then
-			echo "    Power Usage: $GPUPow"
+			echo "    Power Usage: $GPUPow W"
 		fi
 		echo "    PCI SLOT: $GPUSLOT"
 		echo "    PCI ID: $GPUDID"
