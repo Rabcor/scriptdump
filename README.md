@@ -29,7 +29,7 @@ These have been created for personal reasons and thus cannot be expected to be p
 * wasdtoarrow-toggle: Rebinds WASD to be the same as the arrow keys, and binds 1-4 to ASDW (useful for certain video games that do not allow you to change keybinds).
 ## Power Management:
 * cpu_limit: Limit the CPU to a set maximum frequency via auto-cpufreq (requires auto-cpufreq to be installed)
-* igpu_limit: Limit the iGPU to it's minimum allowed frequency
+* igpu_limit: Limit the iGPU to it's minimum allowed frequency (requires root, i suggest moving it to /usr/local/bin/)
 * nvidia_toggle: Toggle your nvidia gpu on/off on reboot (completely powers the card down)
 * turbo_boost: A script that allows you to set intel turbo boost on or off (requires root, i suggest moving it to /usr/local/bin/)
 ## Old:
