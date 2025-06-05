@@ -1,0 +1,61 @@
+#!/bin/bash
+# Shaves time off beginning/end of a file, or sets a target duration for it, the operation is lossless, it might work for videos too but it's untested for that.
+# Using no option (just filename) is allowed, it may fix some files.
+
+help(){
+echo "Usage: audioshave [options] [file]
+Only one option can be used at a time.
+
+Options:
+	-s	Time to shave off start
+	-e	Time to shave off end
+	-d	Target Duration"
+}
+
+# Process input
+readopt='getopts $opts opt;rc=$?;[ "$rc$opt" = "0?" ]&& help && exit 1;[ $rc = 0 ]||{ shift $[OPTIND-1];false; }'
+opts=s:e:d:
+
+# Parse options
+while eval "$readopt"
+do
+    #echo OPT:$opt ${OPTARG+OPTARG:$OPTARG} #for debugging
+    case "$opt" in
+    	"s")
+    		shavestart=$OPTARG
+    		;;
+    	"e")
+    		shaveend=$OPTARG
+    		;;
+    	"d")
+    		totalduration=$OPTARG
+    		;;
+    	*)
+    		help
+    		exit
+    		;;
+    esac
+done
+
+# Get path and filename
+for arg
+do
+    filein+=$arg
+    grep \; <<< "$arg" && echo -e "Error:\n    The path or filename contains an illegal character (;)" && notify-send "vcompress" "Error: The path or filename contains an illegal character (;)" && exit
+done
+
+[ ! -f "$filein" ] && help && exit
+format=${filein##*.}
+fileout="${filein%\.*}_shaved.$format"
+outmap=0
+
+if [ $totalduration -gt 0 ]; then
+	shave="-t $totalduration"
+elif [ $shaveend -gt 0 ]; then
+	shave="-ss $shaveend"
+elif [ $shavestart -gt 0 ]; then
+	shave="-ss $shavestart"
+	outmap=1
+fi
+
+ffmpeg -i "$filein" $shave -i "$filein" -c copy -map 0:a -map 1:a -shortest -f nut - | ffmpeg -y -f nut -i - -c copy -map 0:$outmap "$fileout"
