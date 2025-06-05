@@ -1,15 +1,14 @@
 #!/bin/bash
-# Shaves time off beginning/end of a file, or sets a target duration for it, the operation is lossless, it might work for videos too but it's untested for that.
-# Using no option (just filename) is allowed, it may fix some files.
+# Note: When trimming start of videos, only mp4 containers will do it with perfect accuracy, others will typically start a bit earlier.
 
 help(){
 echo "Usage: audioshave [options] [file]
-Only one option can be used at a time.
+Trim an audio or video file's duration losslessly. 
 
 Options:
 	-s	Time to shave off start
 	-e	Time to shave off end
-	-d	Target Duration"
+	-d	Target Duration (overrides -e)"
 }
 
 # Process input
@@ -47,15 +46,17 @@ done
 [ ! -f "$filein" ] && help && exit
 format=${filein##*.}
 fileout="${filein%\.*}_shaved.$format"
-outmap=0
 
 if [ $totalduration -gt 0 ]; then
-	shave="-t $totalduration"
+	shaveend="-t $totalduration"
 elif [ $shaveend -gt 0 ]; then
-	shave="-ss $shaveend"
-elif [ $shavestart -gt 0 ]; then
-	shave="-ss $shavestart"
-	outmap=1
+	duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$filein")
+	shaveend=$(bc -l <<< $duration-$shaveend)
+	shaveend="-t $shaveend"
 fi
 
-ffmpeg -i "$filein" $shave -i "$filein" -c copy -map 0:a -map 1:a -shortest -f nut - | ffmpeg -y -f nut -i - -c copy -map 0:$outmap "$fileout"
+if [ $shavestart -gt 0 ]; then
+	shavestart="-ss $shavestart"
+fi
+
+ffmpeg -y $shavestart -i "$filein" $shaveend -c copy "$fileout"
