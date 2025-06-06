@@ -47,15 +47,16 @@ done
 format=${filein##*.}
 fileout="${filein%\.*}_shaved.$format"
 
-if [ $totalduration -gt 0 ]; then
+if [ -n "$totalduration" ]; then
 	shaveend="-t $totalduration"
-elif [ $shaveend -gt 0 ]; then
+elif [ -n "$shaveend" ]; then
+	grep "\:" <<< "$shaveend" && shaveend=$(date -d"1970-01-01T$shaveend UTC" +%s)
 	duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$filein")
 	shaveend=$(bc -l <<< $duration-$shaveend)
 	shaveend="-t $shaveend"
 fi
 
-if [ $shavestart -gt 0 ]; then
+if [ -n "$shavestart" ]; then
 	shavestart="-ss $shavestart"
 fi
 
