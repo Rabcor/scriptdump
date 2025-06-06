@@ -4,6 +4,7 @@
 help(){
 echo "Usage: audioshave [options] [file]
 Trim an audio or video file's duration losslessly. 
+Options accept seconds or hh:mm:ss format time.
 
 Options:
 	-s	Time to shave off start
